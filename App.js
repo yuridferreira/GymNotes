@@ -12,14 +12,6 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  getTreinos,
-  addTreino,
-  updateTreino,
-  deleteTreino,
-} from "./database"; // Ajuste o caminho conforme seu projeto
 
 const STORAGE_KEY = "treinos_v2";
 const THEME_KEY = "tema_v2";
@@ -42,10 +34,6 @@ export default function App() {
   const [repeticoes, setRepeticoes] = useState("");
   const [peso, setPeso] = useState("");
   const [grupo, setGrupo] = useState("Peito");
-  const [editId, setEditId] = useState(null);
-  const [filtro, setFiltro] = useState("Todos");
-
-  const theme = darkMode ? estilos.dark : estilos.light;
 
   // Carregar dados e tema
   useEffect(() => {
@@ -93,7 +81,6 @@ export default function App() {
     setRepeticoes("");
     setPeso("");
     setGrupo("Peito");
-    setEditId(null);
   };
 
   const excluirTreino = (sectionTitle, id) => {
@@ -235,38 +222,6 @@ export default function App() {
               </ScrollView>
             </View>
           </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  );
-
-  return (
-    <SafeAreaProvider>
-      <SafeAreaView style={theme.container} edges={["top", "left", "right", "bottom"]}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <Text style={theme.titulo}>🏋️‍♂️ Meus Treinos</Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ color: darkMode ? "#F9FAFB" : "#111827", marginRight: 8 }}>{darkMode ? "Escuro" : "Claro"}</Text>
-              <Switch value={darkMode} onValueChange={() => setDarkMode(!darkMode)} trackColor={{ false: "#767577", true: "#3B82F6" }} thumbColor={darkMode ? "#f9fafb" : "#111827"} />
-            </View>
-          </View>
-
-          <SectionList
-            sections={sections}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderTreino}
-            renderSectionHeader={({ section: { title } }) => (
-              <View style={theme.grupoBox}>
-                <Text style={theme.grupoTitulo}>{title}</Text>
-              </View>
-            )}
-            ListHeaderComponent={<ListHeader />}
-            ListEmptyComponent={() => <Text style={{ color: darkMode ? "#F9FAFB" : "#111827", textAlign: "center", marginTop: 20 }}>Nenhum treino cadastrado.</Text>}
-            stickySectionHeadersEnabled={false}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
-            keyboardShouldPersistTaps="handled"
-          />
         </KeyboardAvoidingView>
       </SafeAreaView>
     </SafeAreaProvider>
