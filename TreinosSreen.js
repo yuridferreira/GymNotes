@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import {
   Platform,
@@ -13,13 +12,12 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
-import ConfigScreen from "./ConfigScreen"; // Tela de configurações
 
 const STORAGE_KEY = "treinos_v2";
 const THEME_KEY = "tema_v2";
 
-export default function App() {
-  const [tela, setTela] = useState("Treinos"); // "Treinos" ou "Config"
+export default function TreinosScreen({ darkMode, setDarkMode }) {
+
   const [darkMode, setDarkMode] = useState(false);
   const [treinos, setTreinos] = useState({
     Peito: [],
@@ -44,8 +42,6 @@ export default function App() {
       try {
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
         if (raw) setTreinos(JSON.parse(raw));
-        const tema = await AsyncStorage.getItem(THEME_KEY);
-        if (tema) setDarkMode(tema === "dark");
       } catch (e) {
         console.warn("Erro carregando dados:", e);
       }
@@ -58,10 +54,6 @@ export default function App() {
   }, [treinos]);
 
   // Salvar tema
-  useEffect(() => {
-    AsyncStorage.setItem(THEME_KEY, darkMode ? "dark" : "light");
-  }, [darkMode]);
-
   const adicionarTreino = () => {
     if (!nome.trim() || !series.trim() || !repeticoes.trim()) return;
 
@@ -116,118 +108,115 @@ export default function App() {
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
         >
-          {/* Abas */}
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 12 }}>
-            <TouchableOpacity onPress={() => setTela("Treinos")}>
-              <Text style={{ fontSize: 18, fontWeight: tela === "Treinos" ? "bold" : "normal", color: darkMode ? "#F9FAFB" : "#111827" }}>
-                🏋️‍♂️ Treinos
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setTela("Config")}>
-              <Text style={{ fontSize: 18, fontWeight: tela === "Config" ? "bold" : "normal", color: darkMode ? "#F9FAFB" : "#111827" }}>
-                ⚙️ Configurações
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {tela === "Treinos" ? (
-            <ScrollView contentContainerStyle={{ paddingBottom: 80 }} keyboardShouldPersistTaps="handled">
-              {/* Header */}
-              <View style={theme.header}>
-                <Text style={theme.titulo}>🏋️‍♂️ Meus Treinos</Text>
-              </View>
-
-              {/* Formulário */}
-              <TextInput
-                style={theme.input}
-                placeholder="Exercício (ex: Supino)"
-                placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
-                value={nome}
-                onChangeText={setNome}
-              />
-              <TextInput
-                style={theme.input}
-                placeholder="Séries"
-                placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
-                keyboardType="numeric"
-                value={series}
-                onChangeText={setSeries}
-              />
-              <TextInput
-                style={theme.input}
-                placeholder="Repetições"
-                placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
-                keyboardType="numeric"
-                value={repeticoes}
-                onChangeText={setRepeticoes}
-              />
-              <TextInput
-                style={theme.input}
-                placeholder="Peso (kg)"
-                placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
-                keyboardType="numeric"
-                value={peso}
-                onChangeText={setPeso}
-              />
-
-              <View style={theme.pickerBox}>
-                <Picker
-                  selectedValue={grupo}
-                  onValueChange={(v) => setGrupo(v)}
-                  dropdownIconColor={darkMode ? "#fff" : "#000"}
-                  style={{ color: darkMode ? "#fff" : "#000" }}
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 80 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Header */}
+            <View style={theme.header}>
+              <Text style={theme.titulo}>🏋️‍♂️ Meus Treinos</Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{ color: darkMode ? "#F9FAFB" : "#111827", marginRight: 8 }}>
+                  {darkMode ? "Escuro" : "Claro"}
+                </Text>
+                <TouchableOpacity
+                  style={theme.switchButton}
+                  onPress={() => setDarkMode((s) => !s)}
+                  activeOpacity={0.8}
                 >
-                  {Object.keys(treinos).map((g) => (
-                    <Picker.Item label={g} value={g} key={g} />
-                  ))}
-                </Picker>
+                  <Text style={theme.switchText}>{darkMode ? "☀️" : "🌙"}</Text>
+                </TouchableOpacity>
               </View>
+            </View>
 
-              <TouchableOpacity style={theme.botao} onPress={adicionarTreino}>
-                <Text style={theme.botaoTexto}>➕ Adicionar</Text>
-              </TouchableOpacity>
+            {/* Formulário */}
+            <TextInput
+              style={theme.input}
+              placeholder="Exercício (ex: Supino)"
+              placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
+              value={nome}
+              onChangeText={setNome}
+            />
+            <TextInput
+              style={theme.input}
+              placeholder="Séries"
+              placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
+              keyboardType="numeric"
+              value={series}
+              onChangeText={setSeries}
+            />
+            <TextInput
+              style={theme.input}
+              placeholder="Repetições"
+              placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
+              keyboardType="numeric"
+              value={repeticoes}
+              onChangeText={setRepeticoes}
+            />
+            <TextInput
+              style={theme.input}
+              placeholder="Peso (kg)"
+              placeholderTextColor={darkMode ? "#9CA3AF" : "#6B7280"}
+              keyboardType="numeric"
+              value={peso}
+              onChangeText={setPeso}
+            />
 
-              {/* Estatísticas */}
-              <View style={theme.estatisticasBox}>
-                <Text style={theme.estatisticasTexto}>Exercícios: {totalExercicios}</Text>
-                <Text style={theme.estatisticasTexto}>Total de séries: {totalSeries}</Text>
-                <Text style={theme.estatisticasTexto}>Total de repetições: {totalRepeticoes}</Text>
-                <Text style={theme.estatisticasTexto}>Peso total levantado: {totalPeso} kg</Text>
-              </View>
+            <View style={theme.pickerBox}>
+              <Picker
+                selectedValue={grupo}
+                onValueChange={(v) => setGrupo(v)}
+                dropdownIconColor={darkMode ? "#fff" : "#000"}
+                style={{ color: darkMode ? "#fff" : "#000" }}
+              >
+                {Object.keys(treinos).map((g) => (
+                  <Picker.Item label={g} value={g} key={g} />
+                ))}
+              </Picker>
+            </View>
 
-              {/* Lista de treinos */}
-              <View style={theme.listaContainer}>
-                <Text style={theme.subtitulo}>📋 Lista de Treinos</Text>
-                <ScrollView
-                  style={{ flexGrow: 0 }}
-                  contentContainerStyle={{ paddingBottom: 10 }}
-                  showsVerticalScrollIndicator={true}
-                  nestedScrollEnabled={true}
-                >
-                  {Object.keys(treinos).map((sectionTitle) => (
-                    <View key={sectionTitle} style={{ marginBottom: 12 }}>
-                      <Text style={theme.grupoTitulo}>{sectionTitle}</Text>
-                      {treinos[sectionTitle].map((item) => (
-                        <View key={item.id} style={theme.item}>
-                          <Text style={theme.itemTexto}>
-                            {item.data} – {item.nome} → {item.series}x{item.repeticoes} ({item.peso}kg)
-                          </Text>
-                          <TouchableOpacity
-                            style={theme.botaoExcluirCompacto}
-                            onPress={() => excluirTreino(sectionTitle, item.id)}
-                          >
-                            <Text style={theme.excluirTexto}>✕</Text>
-                          </TouchableOpacity>
-                        </View>
-                      ))}
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            </ScrollView>
-          ) : (
-            <ConfigScreen darkMode={darkMode} setDarkMode={setDarkMode} />
-          )}
+            <TouchableOpacity style={theme.botao} onPress={adicionarTreino}>
+              <Text style={theme.botaoTexto}>➕ Adicionar</Text>
+            </TouchableOpacity>
+
+            {/* Estatísticas */}
+            <View style={theme.estatisticasBox}>
+              <Text style={theme.estatisticasTexto}>Exercícios: {totalExercicios}</Text>
+              <Text style={theme.estatisticasTexto}>Total de séries: {totalSeries}</Text>
+              <Text style={theme.estatisticasTexto}>Total de repetições: {totalRepeticoes}</Text>
+              <Text style={theme.estatisticasTexto}>Peso total levantado: {totalPeso} kg</Text>
+            </View>
+
+            {/* Lista de treinos com altura limitada */}
+            <View style={theme.listaContainer}>
+              <Text style={theme.subtitulo}>📋 Lista de Treinos</Text>
+              <ScrollView
+                style={{ flexGrow: 0 }}
+                contentContainerStyle={{ paddingBottom: 10 }}
+                showsVerticalScrollIndicator={true}
+                nestedScrollEnabled={true}
+              >
+                {Object.keys(treinos).map((sectionTitle) => (
+                  <View key={sectionTitle} style={{ marginBottom: 12 }}>
+                    <Text style={theme.grupoTitulo}>{sectionTitle}</Text>
+                    {treinos[sectionTitle].map((item) => (
+                      <View key={item.id} style={theme.item}>
+                        <Text style={theme.itemTexto}>
+                          {item.data} – {item.nome} → {item.series}x{item.repeticoes} ({item.peso}kg)
+                        </Text>
+                        <TouchableOpacity
+                          style={theme.botaoExcluirCompacto}
+                          onPress={() => excluirTreino(sectionTitle, item.id)}
+                        >
+                          <Text style={theme.excluirTexto}>✕</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -251,9 +240,25 @@ const estilos = {
     itemTexto: { color: "#374151" },
     botaoExcluirCompacto: { backgroundColor: "#EF4444", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
     excluirTexto: { color: "#fff", fontWeight: "700" },
-    listaContainer: { maxHeight: 350, borderWidth: 1, borderColor: "#4B5563", borderRadius: 10, padding: 8, marginBottom: 20 },
-    subtitulo: { fontSize: 18, fontWeight: "600", marginBottom: 8, textAlign: "center", color: "#111827" },
+    switchButton: { padding: 8 },
+    switchText: { fontSize: 18 },
+    listaContainer: {
+      maxHeight: 350,
+      borderWidth: 1,
+      borderColor: "#4B5563",
+      borderRadius: 10,
+      padding: 8,
+      marginBottom: 20,
+    },
+    subtitulo: {
+      fontSize: 18,
+      fontWeight: "600",
+      marginBottom: 8,
+      textAlign: "center",
+      color: "#111827",
+    },
   }),
+
   dark: StyleSheet.create({
     container: { flex: 1, backgroundColor: "#111827", paddingHorizontal: 16, paddingTop: 12 },
     header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
@@ -269,7 +274,22 @@ const estilos = {
     itemTexto: { color: "#D1D5DB" },
     botaoExcluirCompacto: { backgroundColor: "#DC2626", paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
     excluirTexto: { color: "#fff", fontWeight: "700" },
-    listaContainer: { maxHeight: 350, borderWidth: 1, borderColor: "#4B5563", borderRadius: 10, padding: 8, marginBottom: 20 },
-    subtitulo: { fontSize: 18, fontWeight: "600", marginBottom: 8, textAlign: "center", color: "#F9FAFB" },
+    switchButton: { padding: 8 },
+    switchText: { fontSize: 18 },
+    listaContainer: {
+      maxHeight: 350,
+      borderWidth: 1,
+      borderColor: "#4B5563",
+      borderRadius: 10,
+      padding: 8,
+      marginBottom: 20,
+    },
+    subtitulo: {
+      fontSize: 18,
+      fontWeight: "600",
+      marginBottom: 8,
+      textAlign: "center",
+      color: "#F9FAFB",
+    },
   }),
 };
