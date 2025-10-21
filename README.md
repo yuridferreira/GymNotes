@@ -27,7 +27,7 @@ git clone https://github.com/yuridferreira/GymNotes
 # Instalar dependências
 npm install
 
-# Rodar o app
+# Iniciar o App
 npx expo start -c  
 
 
