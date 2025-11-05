@@ -42,4 +42,4 @@ Depois, basta abrir no Expo Go (Android ou iOS) para visualizar o app.
 
 👨‍💻 Autor
 
-Yuri Demétrio Ferreira
+Feito por Yuri Demétrio Ferreira
