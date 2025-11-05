@@ -27,7 +27,7 @@ git clone https://github.com/yuridferreira/GymNotes
 # Instalar dependências
 npm install
 
-# Rodar o app
+# Iniciar o App
 npx expo start -c  
 
 
@@ -42,4 +42,4 @@ Depois, basta abrir no Expo Go (Android ou iOS) para visualizar o app.
 
 👨‍💻 Autor
 
-Yuri Demétrio Ferreira
+Feito por Yuri Demétrio Ferreira

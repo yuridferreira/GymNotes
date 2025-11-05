@@ -7,7 +7,12 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "infra:up": "docker compose up -d --build",
+    "infra:down": "docker compose down --volumes --remove-orphans",
+    "infra:seed": "docker cp infra/seed_users.sql \"$(docker compose ps -q db)\":/tmp/seed_users.sql && docker compose exec -T db sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\" -f /tmp/seed_users.sql'",
+    "infra:bootstrap": "bash infra/bootstrap_db.sh",
+    "infra:check": "bash infra/check_db.sh"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
